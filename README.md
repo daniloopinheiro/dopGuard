@@ -1,10 +1,12 @@
-# Nome do Projeto
+# dopSentinel
 
-Breve descrição do projeto aqui.
+**Plataforma modular de observabilidade** para aplicações .NET com integração plugável a ferramentas como **Datadog**, **Elastic Stack**, **Grafana/Prometheus**, **Azure Monitor**, entre outras.
 
-Inclua uma ou duas frases descrevendo o propósito e o objetivo do seu software.
+O `dopSentinel` fornece uma base sólida para **observabilidade distribuída**, com arquitetura robusta, extensível e pronta para ambientes empresariais modernos.
 
-## Índice
+---
+
+## 📚 Índice
 
 1. [Visão Geral](#visão-geral)
 2. [Instalação](#instalação)
@@ -14,58 +16,154 @@ Inclua uma ou duas frases descrevendo o propósito e o objetivo do seu software.
 6. [Licença](#licença)
 7. [Contato](#contato)
 
-## Visão Geral
+---
 
-Breve explicação sobre o que é o seu software e por que ele é útil. Inclua talvez uma visão geral de seus recursos principais ou funcionalidades distintas.
+## 🔭 Visão Geral
 
-## Instalação
+O `dopSentinel` implementa uma arquitetura de referência para observabilidade de aplicações .NET, aplicando conceitos como:
 
-Forneça instruções claras sobre como instalar o seu software. Inclua pré-requisitos, como dependências de software ou bibliotecas necessárias. Forneça os comandos específicos que o usuário precisa executar para instalar o software.
+* 🔌 *OpenTelemetry como padrão universal*
+* 🧩 Integração com múltiplos backends: **Datadog**, **Elastic APM**, **Grafana + Prometheus**, **Azure Application Insights**
+* 📈 Métricas, Logs, Traces e Health Checks com rastreabilidade distribuída
+* 🔁 Suporte a múltiplos protocolos: OTLP HTTP/gRPC, Logstash, Prometheus PushGateway
+* ♻️ Modular e extensível para uso com Clean Architecture e DDD
 
-Exemplo:
+---
 
-```
-$ git clone https://github.com/seu-usuario/nome-do-projeto.git
-$ cd nome-do-projeto
-```
+## ⚙️ Instalação
 
-## Como Usar
+### Pré-requisitos
 
-Explique como usar o seu software em detalhes. Forneça exemplos de código, comandos de linha ou capturas de tela para demonstrar o uso típico do software. Isso pode incluir configurações específicas, parâmetros de linha de comando, ou qualquer outra informação relevante para o usuário.
+* [.NET 7 SDK](https://dotnet.microsoft.com/en-us/download)
+* [Docker](https://www.docker.com/)
+* [Docker Compose](https://docs.docker.com/compose/)
+* [Git](https://git-scm.com/)
 
-Exemplo:
+### Clonando o projeto
 
 ```bash
-
+git clone https://github.com/daniloopinheiro/dopSentinel.git
+cd dopSentinel
 ```
 
-Isso iniciará o servidor de desenvolvimento.
+### Subindo infraestrutura de observabilidade (opcional)
 
-## Configuração
-
-Se o seu software requer configuração adicional além da instalação padrão, explique aqui como configurá-lo. Isso pode incluir variáveis de ambiente, arquivos de configuração ou qualquer ajuste necessário para personalizar o comportamento do software.
-
-## Contribuições
-
-Explique se você está aberto para contribuições e como outros desenvolvedores podem ajudar. Inclua orientações para quem deseja reportar bugs, enviar solicitações de novos recursos ou fazer alterações no código.
-
-## Contato
-
-Forneça informações para contato, como email ou links para redes sociais, caso os usuários tenham dúvidas ou queiram se comunicar com os desenvolvedores do projeto.
-
-* **Email Pessoal**: [dopme.io](mailto:daniloopro@gmail.com)
-* **Email Empresarial**: [DevsFree](mailto:devsfree@devsfree.com.br)
-* **Email Consultoria**: [dopme.io](mailto:contato@dopme.io)
-* **LinkedIn**: [Danilo O. Pinheiro](https://www.linkedin.com/in/daniloopinheiro/)
+```bash
+docker-compose up -d
+```
 
 ---
 
-Adapte este modelo conforme necessário para o seu projeto específico, adicionando ou removendo seções conforme apropriado. Um bom README é essencial para orientar os usuários e colaboradores sobre o uso e desenvolvimento do seu software.
+## 🚀 Como Usar
 
-## Licença
+### Executando localmente
 
-Indique a licença sob a qual o seu projeto está disponível. Por exemplo, MIT, GPL, Apache, etc.
+```bash
+cd dopSentinel.Api
+dotnet run
+```
+
+A API estará disponível em: `https://localhost:5001`
+Documentação via Swagger: `https://localhost:5001/swagger`
+
+### Rodando testes
+
+```bash
+dotnet test
+```
 
 ---
 
-<p align="center"> Feito com ❤️ por <strong>Danilo O. Pinheiro</strong><br/> <a href="https://devsfree.com.br" target="_blank">DevsFree</a> • <a href="https://dopme.io" target="_blank">dopme.io</a> </p>
+## ⚙️ Configuração
+
+### OpenTelemetry com múltiplos backends
+
+No `appsettings.json`:
+
+```json
+"Otel": {
+  "Endpoint": "http://localhost:4318/v1/traces",
+  "EnableDatadog": true,
+  "EnableElastic": true,
+  "EnablePrometheus": true,
+  "EnableAzureMonitor": false
+}
+```
+
+### Variáveis de ambiente
+
+Configure no `.env` ou `docker-compose.override.yml`:
+
+```env
+DATADOG_API_KEY=your-datadog-api-key
+ELASTIC_APM_SERVER_URL=http://localhost:8200
+PROMETHEUS_PUSHGATEWAY=http://localhost:9091
+APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=...
+```
+
+### Docker Compose
+
+```yaml
+datadog:
+  image: gcr.io/datadoghq/agent:latest
+  environment:
+    - DD_API_KEY=${DATADOG_API_KEY}
+    - DD_OTLP_CONFIG_RECEIVER_PROTOCOLS_HTTP_ENABLED=true
+    - DD_LOGS_ENABLED=true
+  ports:
+    - "4318:4318"
+    - "8126:8126"
+```
+
+---
+
+## 🧱 Estrutura do Projeto
+
+```bash
+dopSentinel/
+│
+├── dopSentinel.Api/              # API com rastreabilidade e logs
+├── dopSentinel.Application/      # Casos de uso
+├── dopSentinel.Domain/           # Regras de negócio
+├── dopSentinel.Infrastructure/   # Persistência e mensageria
+├── dopSentinel.Observability/    # Integrações com Datadog, ELK, Prometheus, etc
+├── dopSentinel.BuildingBlocks/   # Extensions de OpenTelemetry, Logging e Metrics
+├── dopSentinel.Tests/            # Testes automatizados
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+## 🤝 Contribuições
+
+Contribuições são bem-vindas!
+
+### Como contribuir
+
+1. Faça um fork do projeto
+2. Crie uma branch: `git checkout -b feature/nova-funcionalidade`
+3. Commit: `git commit -m 'feat: nova funcionalidade'`
+4. Push: `git push origin feature/nova-funcionalidade`
+5. Abra um Pull Request 🚀
+
+---
+
+## 📄 Licença
+
+Este projeto está licenciado sob a [Licença MIT](LICENSE).
+
+---
+
+## 👋 Contato
+
+Tem dúvidas ou sugestões? Fale comigo:
+
+* **Email Pessoal**: [daniloopro@gmail.com](mailto:daniloopro@gmail.com)
+* **Empresarial**: [devsfree@devsfree.com.br](mailto:devsfree@devsfree.com.br)
+* **Consultoria**: [contato@dopme.io](mailto:contato@dopme.io)
+* **LinkedIn**: [Danilo O. Pinheiro](https://www.linkedin.com/in/daniloopinheiro)
+
+---
+
+<p align="center">Feito com ❤️ por <strong>Danilo O. Pinheiro</strong><br/> <a href="https://devsfree.com.br" target="_blank">DevsFree</a> • <a href="https://dopme.io" target="_blank">dopme.io</a></p>
