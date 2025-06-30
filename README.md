@@ -2,7 +2,7 @@
 
 **Plataforma modular de observabilidade** para aplicações .NET com integração plugável a ferramentas como **Datadog**, **Elastic Stack**, **Grafana/Prometheus**, **Azure Monitor**, entre outras.
 
-O `dopSentinel` fornece uma base sólida para **observabilidade distribuída**, com arquitetura robusta, extensível e pronta para ambientes empresariais modernos.
+O `dopGuard` fornece uma base sólida para **observabilidade distribuída**, com arquitetura robusta, extensível e pronta para ambientes empresariais modernos.
 
 ---
 
@@ -20,7 +20,7 @@ O `dopSentinel` fornece uma base sólida para **observabilidade distribuída**, 
 
 ## 🔭 Visão Geral
 
-O `dopSentinel` implementa uma arquitetura de referência para observabilidade de aplicações .NET, aplicando conceitos como:
+O `dopGuard` implementa uma arquitetura de referência para observabilidade de aplicações .NET, aplicando conceitos como:
 
 * 🔌 *OpenTelemetry como padrão universal*
 * 🧩 Integração com múltiplos backends: **Datadog**, **Elastic APM**, **Grafana + Prometheus**, **Azure Application Insights**
@@ -42,8 +42,8 @@ O `dopSentinel` implementa uma arquitetura de referência para observabilidade d
 ### Clonando o projeto
 
 ```bash
-git clone https://github.com/daniloopinheiro/dopSentinel.git
-cd dopSentinel
+git clone https://github.com/daniloopinheiro/dopGuard.git
+cd dopGuard
 ```
 
 ### Subindo infraestrutura de observabilidade (opcional)
@@ -59,7 +59,7 @@ docker-compose up -d
 ### Executando localmente
 
 ```bash
-cd dopSentinel.Api
+cd dopGuard.Api
 dotnet run
 ```
 
@@ -120,15 +120,15 @@ datadog:
 ## 🧱 Estrutura do Projeto
 
 ```bash
-dopSentinel/
+dopGuard/
 │
-├── dopSentinel.Api/              # API com rastreabilidade e logs
-├── dopSentinel.Application/      # Casos de uso
-├── dopSentinel.Domain/           # Regras de negócio
-├── dopSentinel.Infrastructure/   # Persistência e mensageria
-├── dopSentinel.Observability/    # Integrações com Datadog, ELK, Prometheus, etc
-├── dopSentinel.BuildingBlocks/   # Extensions de OpenTelemetry, Logging e Metrics
-├── dopSentinel.Tests/            # Testes automatizados
+├── dopGuard.Api/              # API com rastreabilidade e logs
+├── dopGuard.Application/      # Casos de uso
+├── dopGuard.Domain/           # Regras de negócio
+├── dopGuard.Infrastructure/   # Persistência e mensageria
+├── dopGuard.Observability/    # Integrações com Datadog, ELK, Prometheus, etc
+├── dopGuard.BuildingBlocks/   # Extensions de OpenTelemetry, Logging e Metrics
+├── dopGuard.Tests/            # Testes automatizados
 ├── docker-compose.yml
 └── README.md
 ```
