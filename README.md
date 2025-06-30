@@ -1,4 +1,4 @@
-# dopSentinel
+# dopGuard
 
 **Plataforma modular de observabilidade** para aplicações .NET com integração plugável a ferramentas como **Datadog**, **Elastic Stack**, **Grafana/Prometheus**, **Azure Monitor**, entre outras.
 
