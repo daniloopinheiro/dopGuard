@@ -1,0 +1,73 @@
+version: "3.9"
+
+services:
+
+  # 🔍 Datadog Agent
+  datadog:
+    image: gcr.io/datadoghq/agent:latest
+    container_name: datadog-agent
+    environment:
+      - DD_API_KEY=${DATADOG_API_KEY}              # Defina no .env
+      - DD_SITE=datadoghq.com                      # ou datadoghq.eu, se for o caso
+      - DD_LOGS_ENABLED=true
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
+      - DD_CONTAINER_EXCLUDE="name:datadog-agent"
+      - DD_OTLP_CONFIG_RECEIVER_PROTOCOLS_HTTP_ENABLED=true
+      - DD_OTLP_CONFIG_RECEIVER_PROTOCOLS_GRPC_ENABLED=true
+    ports:
+      - "4318:4318"  # OTLP HTTP
+      - "4317:4317"  # OTLP gRPC
+      - "8126:8126"  # APM
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  # 📊 Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+
+  # 📈 Elastic APM Server
+  elastic-apm:
+    image: elastic/apm-server:8.13.4
+    container_name: elastic-apm
+    ports:
+      - "8200:8200"
+    environment:
+      - output.elasticsearch.hosts=["http://elasticsearch:9200"]
+      - apm-server.host=0.0.0.0:8200
+      - apm-server.secret_token=changeme
+      - apm-server.kibana.enabled=true
+      - apm-server.kibana.host=http://kibana:5601
+    depends_on:
+      - elasticsearch
+      - kibana
+    restart: unless-stopped
+
+  # 🧠 Elasticsearch (necessário para Elastic APM)
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    restart: unless-stopped
+
+  # 📊 Kibana (UI do Elastic Stack)
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.4
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
