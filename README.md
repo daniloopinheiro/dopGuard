@@ -1,6 +1,6 @@
 # dopGuard
 
-[![dopGuard Net - CI](https://github.com/daniloopinheiro/dopGuard/actions/workflows/dotnet.yml/badge.svg)](https://github.com/daniloopinheiro/dopGuard/actions/workflows/dotnet.yml)
+[![dopGuard Net - CI](https://github.com/daniloopinheiro/dopGuard/actions/workflows/dotnet.yml/badge.svg?branch=develop)](https://github.com/daniloopinheiro/dopGuard/actions/workflows/dotnet.yml)
 
 **Plataforma modular de observabilidade** para aplicações .NET com integração plugável a ferramentas como **Datadog**, **Elastic Stack**, **Grafana/Prometheus**, **Azure Monitor**, entre outras.
 
